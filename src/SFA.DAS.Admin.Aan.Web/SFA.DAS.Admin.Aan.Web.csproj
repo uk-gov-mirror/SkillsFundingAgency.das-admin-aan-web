@@ -20,7 +20,6 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.2.0" />
     <PackageReference Include="SFA.DAS.Aan.SharedUi" Version="0.1.111" />
-    <PackageReference Include="SFA.DAS.AdminService.Common" Version="0.1.134" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.89" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
