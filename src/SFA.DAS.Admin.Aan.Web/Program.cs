@@ -1,5 +1,4 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.ApplicationInsights;
@@ -42,8 +41,6 @@ builder.Services
     })
     .AddSessionStateTempDataProvider();
 builder.Services.AddDasHealthChecks(applicationConfiguration);
-
-builder.Services.AddFluentValidationAutoValidation();
 
 #if DEBUG
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
