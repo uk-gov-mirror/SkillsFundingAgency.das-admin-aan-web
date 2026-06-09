@@ -9,6 +9,7 @@
 [![Confluence Page](https://img.shields.io/badge/Confluence-Project-blue)](https://skillsfundingagency.atlassian.net/wiki/spaces/NDL/pages/3852894209/AAN+Apprentice+Solution+Architecture)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?longCache=true&style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
 
+## About
 This web solution is part of Apprentice Ambassador Network (AAN) project. AAN requires admin users to create and manage events which are organised by the ambassadors. Also there is a need to manage ambassadors (members). These two journies are enabled in this solution. 
 
 ## How It Works
@@ -23,12 +24,19 @@ There are two types of admin users, pure admin users who mainly manage events an
 
 ### Pre-Requisites
 * A clone of this repository
+* Visual studio or similar IDE 
+* .Net 10.0 SDK
 * An Azure Active Directory account with the appropriate roles as per the [config](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-tools-servicebus-support/SFA.DAS.Tools.Servicebus.Support.json).
 * The Outer API [das-apim-endpoints](https://github.com/SkillsFundingAgency/das-apim-endpoints/tree/master/src/AdminAan) should be available either running locally or accessible in an Azure tenancy.
 * The Inner API [das-aan-hub-api](https://github.com/SkillsFundingAgency/das-aan-hub-api) should be available either running locally or accessible in an Azure tenancy.
 
-### Config
-You can find the latest config file in [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-admin-aan-web/SFA.DAS.AdminAan.Web.json)
+### Configuration
+- Create a `Configuration `table in your (Development) local storage account.
+- Obtain the [SFA.DAS.AdminAan.Web.json](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-admin-aan-web/SFA.DAS.AdminAan.Web.json) from the `das-employer-config`.
+- Add a row to the Configuration table with fields: 
+  - PartitionKey: LOCAL
+  - RowKey: SFA.DAS.AdminAan.Web_1.0
+  - Data: {The contents of the `SFA.DAS.AdminAan.Web.json` file}
 
 In the web project, if not exist already, add `AppSettings.Development.json` file with following content:
 ```json
@@ -59,7 +67,7 @@ using:
 * Data: (config as above)
 
 ## Technologies
-* .NetCore 8.0
+* .NetCore 10.0
 * NUnit
 * Moq
 * FluentAssertions
