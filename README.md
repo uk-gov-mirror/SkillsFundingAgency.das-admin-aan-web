@@ -67,7 +67,7 @@ using:
 * Data: (config as above)
 
 ## Technologies
-* .NetCore 10.0
+* .Net 10.0
 * NUnit
 * Moq
 * FluentAssertions
