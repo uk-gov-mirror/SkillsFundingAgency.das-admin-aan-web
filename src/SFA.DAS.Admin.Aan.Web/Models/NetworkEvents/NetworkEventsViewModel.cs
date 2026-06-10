@@ -14,7 +14,7 @@ public class NetworkEventsViewModel
     public bool ShowCalendarEvents => CalendarEvents.Any();
     public string ClearSelectedFiltersLink { get; set; } = null!;
     public string CreateEventLink { get; set; } = null!;
-    public string OrderBy { get; set; }
+    public string OrderBy { get; set; } = null!;
     public List<SelectListItem> OrderByOptions => new List<SelectListItem>
         { new("Soonest", "soonest"), new("Closest", "closest") };
     public bool ShowSortOptions => !string.IsNullOrWhiteSpace(FilterChoices.Location) && CalendarEvents.Any();
