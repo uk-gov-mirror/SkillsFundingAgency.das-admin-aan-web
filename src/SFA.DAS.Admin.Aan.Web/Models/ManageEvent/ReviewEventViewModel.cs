@@ -88,18 +88,18 @@ public class ReviewEventViewModel : ManageEventViewModelBase
             CancelledAttendees = source?.CancelledAttendees?.Select(x => new CancelledAttendee(x.MemberId, x.MemberName, x.Email, x.CancelledDate))
                 .OrderByDescending(a => a.CancellationDate)
                 .ToList() ?? [],
-            Start = source?.Start?.UtcToLocalTime(),
-            End = source?.End?.UtcToLocalTime(),
-            EventLocation = source?.Location + (!string.IsNullOrEmpty(source?.Postcode) ? $", {source.Postcode}" : string.Empty),
-            OnlineEventLink = source?.EventLink,
-            SchoolName = source?.SchoolName,
-            IsAtSchool = source?.IsAtSchool,
-            OrganiserName = source?.ContactName,
-            OrganiserEmail = source?.ContactEmail,
-            NumberOfAttendees = source?.PlannedAttendees,
-            LastUpdatedDate = source?.LastUpdatedDate?.UtcToLocalTime(),
-            PageTitle = source?.PageTitle,
-            HasChangedEvent = source?.HasChangedEvent ?? false,
+            Start = source.Start?.UtcToLocalTime(),
+            End = source.End?.UtcToLocalTime(),
+            EventLocation = source.Location + (!string.IsNullOrEmpty(source.Postcode) ? $", {source.Postcode}" : string.Empty),
+            OnlineEventLink = source.EventLink,
+            SchoolName = source.SchoolName,
+            IsAtSchool = source.IsAtSchool,
+            OrganiserName = source.ContactName,
+            OrganiserEmail = source.ContactEmail,
+            NumberOfAttendees = source.PlannedAttendees,
+            LastUpdatedDate = source.LastUpdatedDate?.UtcToLocalTime(),
+            PageTitle = source.PageTitle,
+            HasChangedEvent = source.HasChangedEvent
         };
 
     public record Attendee(Guid Id, string Name, string Surname, string Email, DateTime? SignUpDate);

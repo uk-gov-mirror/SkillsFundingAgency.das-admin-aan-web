@@ -117,9 +117,9 @@ public class ErrorControllerTests
         var viewModel = result!.Model as ErrorViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.HomePageUrl, Is.EqualTo(AdministratorHubUrl));
-        });
+        }
     }
 }

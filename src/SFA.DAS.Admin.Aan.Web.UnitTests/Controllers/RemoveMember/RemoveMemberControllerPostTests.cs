@@ -46,12 +46,12 @@ public class RemoveMemberControllerPostTests
         var response = await sut.Index(memberId, submitRemoveMemberModel, CancellationToken.None);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(response, Is.TypeOf<RedirectToActionResult>());
             var redirectToAction = (RedirectToActionResult)response;
             Assert.That(redirectToAction.ActionName, Does.Contain("RemoveMemberConfirmation"));
-        });
+        }
     }
 
     private void SetUpControllerWithContext()
