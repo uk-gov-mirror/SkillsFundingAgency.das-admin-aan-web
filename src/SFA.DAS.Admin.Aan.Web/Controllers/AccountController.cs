@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Admin.Aan.Web.Authentication;
-using SFA.DAS.Admin.Aan.Web.Extensions;
-using System.Security.Claims;
 using Microsoft.Extensions.Options;
+using SFA.DAS.Admin.Aan.Web.Authentication;
 using SFA.DAS.Admin.Aan.Web.Configuration;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Models.Account;
 
 namespace SFA.DAS.Admin.Aan.Web.Controllers;
@@ -91,7 +91,7 @@ public class AccountController : Controller
             var userName = HttpContext.User.Identity!.Name ?? HttpContext.User.FindFirstValue(ClaimTypes.Upn);
             var roles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role || c.Type == Roles.RoleClaimType).Select(c => c.Value);
 
-            _logger.LogError("AccessDenied - User '{userName}' does not have a valid role. They have the following roles: {roles}", userName, string.Join(",", roles));
+            _logger.LogError("AccessDenied - User '{UserName}' does not have a valid role. They have the following roles: {Roles}", userName, string.Join(",", roles));
         }
 
         return View("AccessDenied", new Error403ViewModel(_configuration["ResourceEnvironmentName"] ?? string.Empty) { UseDfESignIn = _applicationConfiguration.UseDfESignIn });
