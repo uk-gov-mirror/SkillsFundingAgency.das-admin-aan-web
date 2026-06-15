@@ -39,10 +39,20 @@ public class EventTypeController : Controller
     public async Task<IActionResult> Post(EventTypeViewModel submitModel, CancellationToken cancellationToken)
     {
         var sessionModel = _sessionService.Get<EventSessionModel>();
+        var result = _validator.Validate(submitModel);
+
+        if (!result.IsValid)
+        {
+            ModelState.AddValidationErrors(result.Errors);
+            var model = await GetViewModel(sessionModel, cancellationToken);
+            model.EventTitle = submitModel.EventTitle;
+            model.EventTypeId = submitModel.EventTypeId;
+            model.EventRegionId = submitModel.EventRegionId;
+            return View(ViewPath, model);
+        }
         sessionModel.EventTitle = submitModel.EventTitle;
         sessionModel.CalendarId = submitModel.EventTypeId;
         sessionModel.RegionId = submitModel.EventRegionId;
-        sessionModel.EventTitle = submitModel.EventTitle;
 
         if (sessionModel.IsAlreadyPublished)
         {
@@ -50,14 +60,6 @@ public class EventTypeController : Controller
         }
 
         _sessionService.Set(sessionModel);
-
-        var result = _validator.Validate(submitModel);
-
-        if (!result.IsValid)
-        {
-            ModelState.AddValidationErrors(result.Errors);
-            return View(ViewPath, submitModel);
-        }
 
         if (sessionModel.IsAlreadyPublished)
         {

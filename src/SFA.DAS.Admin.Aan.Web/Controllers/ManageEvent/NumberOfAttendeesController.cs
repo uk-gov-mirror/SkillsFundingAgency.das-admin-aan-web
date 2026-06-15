@@ -38,16 +38,18 @@ public class NumberOfAttendeesController : Controller
     [Route("events/{calendarEventId}/attendees", Name = RouteNames.UpdateEvent.UpdateNumberOfAttendees)]
     public IActionResult Post(NumberOfAttendeesViewModel submitModel)
     {
-        var result = _validator.Validate(submitModel);
+        var sessionModel = _sessionService.Get<EventSessionModel>();
 
+        var result = _validator.Validate(submitModel);
 
         if (!result.IsValid)
         {
             ModelState.AddValidationErrors(result.Errors);
-            return View(ViewPath, submitModel);
+            var model = GetViewModel(sessionModel);
+            model.NumberOfAttendees = submitModel.NumberOfAttendees;
+            return View(ViewPath, model);
         }
 
-        var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.PlannedAttendees = submitModel.NumberOfAttendees;
 
         if (sessionModel.IsAlreadyPublished)

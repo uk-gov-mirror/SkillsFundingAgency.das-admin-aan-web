@@ -41,15 +41,19 @@ public class OrganiserDetailsController : Controller
     [Route("events/{calendarEventId}/organiser", Name = RouteNames.UpdateEvent.UpdateOrganiserDetails)]
     public IActionResult Post(OrganiserDetailsViewModel submitModel)
     {
+        var sessionModel = _sessionService.Get<EventSessionModel>();
+
         var result = _organiserNameValidator.Validate(submitModel);
 
         if (!result.IsValid)
         {
             ModelState.AddValidationErrors(result.Errors);
-            return View(OrganiserDetailsViewPath, submitModel);
+            var model = GetViewModel(sessionModel);
+            model.OrganiserName = submitModel.OrganiserName;
+            model.OrganiserEmail = submitModel.OrganiserEmail;
+            return View(OrganiserDetailsViewPath, model);
         }
 
-        var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.ContactName = submitModel.OrganiserName;
         sessionModel.ContactEmail = submitModel.OrganiserEmail;
 
@@ -59,6 +63,7 @@ public class OrganiserDetailsController : Controller
         }
 
         _sessionService.Set(sessionModel);
+
 
         if (sessionModel.IsAlreadyPublished)
         {

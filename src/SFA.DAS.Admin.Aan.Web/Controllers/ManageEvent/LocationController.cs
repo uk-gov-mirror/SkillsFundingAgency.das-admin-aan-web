@@ -37,15 +37,27 @@ public class LocationController : Controller
     [Route("events/{calendarEventId}/location", Name = RouteNames.UpdateEvent.UpdateLocation)]
     public IActionResult Post(LocationViewModel submitModel)
     {
+        var sessionModel = _sessionService.Get<EventSessionModel>();
         var result = _validator.Validate(submitModel);
 
         if (!result.IsValid)
         {
             ModelState.AddValidationErrors(result.Errors);
-            return View(ViewPath, submitModel);
-        }
+            var model = GetViewModel(sessionModel);
 
-        var sessionModel = _sessionService.Get<EventSessionModel>();
+            model.SearchTerm = submitModel.SearchTerm;
+            model.OnlineEventLink = submitModel.OnlineEventLink;
+            model.OrganisationName = submitModel.OrganisationName;
+            model.AddressLine1 = submitModel.AddressLine1;
+            model.AddressLine2 = submitModel.AddressLine2;
+            model.Town = submitModel.Town;
+            model.County = submitModel.County;
+            model.Latitude = submitModel.Latitude;
+            model.Longitude = submitModel.Longitude;
+            model.Postcode = submitModel.Postcode;
+
+            return View(ViewPath, model);
+        }
 
         sessionModel.Location = submitModel.EventLocation?.Trim();
         sessionModel.Latitude = submitModel.Latitude;
@@ -60,6 +72,7 @@ public class LocationController : Controller
         }
 
         _sessionService.Set(sessionModel);
+
 
         if (sessionModel.IsAlreadyPublished)
         {

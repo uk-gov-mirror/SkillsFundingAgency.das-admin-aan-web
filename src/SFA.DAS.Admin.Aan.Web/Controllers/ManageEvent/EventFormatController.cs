@@ -37,15 +37,16 @@ public class EventFormatController : Controller
     [Route("events/{calendarEventId}/format", Name = RouteNames.UpdateEvent.UpdateEventFormat)]
     public IActionResult Post(EventFormatViewModel submitModel)
     {
+        var sessionModel = _sessionService.Get<EventSessionModel>();
         var result = _validator.Validate(submitModel);
 
         if (!result.IsValid)
         {
             ModelState.AddValidationErrors(result.Errors);
-            return View(ViewPath, submitModel);
+            var model = GetViewModel(sessionModel);
+            model.EventFormat = submitModel.EventFormat;
+            return View(ViewPath, model);
         }
-
-        var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.EventFormat = submitModel.EventFormat;
 
         if (sessionModel.IsAlreadyPublished)
@@ -54,6 +55,7 @@ public class EventFormatController : Controller
         }
 
         _sessionService.Set(sessionModel);
+
 
         if (sessionModel.IsAlreadyPublished)
         {

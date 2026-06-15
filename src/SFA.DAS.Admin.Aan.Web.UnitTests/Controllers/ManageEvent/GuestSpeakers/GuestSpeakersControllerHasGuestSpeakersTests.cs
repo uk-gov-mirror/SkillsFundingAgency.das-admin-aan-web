@@ -12,6 +12,7 @@ using SFA.DAS.Admin.Aan.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.ManageEvent.GuestSpeakers;
+
 public class GuestSpeakersControllerHasGuestSpeakersTests
 {
     private static readonly string NetworkEventsUrl = Guid.NewGuid().ToString();
@@ -240,6 +241,9 @@ public class GuestSpeakersControllerHasGuestSpeakersTests
         [Greedy] GuestSpeakersController sut)
     {
         sut.ModelState.AddModelError("key", "message");
+        var urlHelper = sut.AddUrlHelperMock();
+        urlHelper.AddUrlForRoute(RouteNames.NetworkEvents, NetworkEventsUrl);
+        urlHelper.AddUrlForRoute(RouteNames.CreateEvent.NumberOfAttendees, PostUrl);
 
         var submitModel = new HasGuestSpeakersViewModel { CancelLink = NetworkEventsUrl };
 

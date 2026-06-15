@@ -41,15 +41,16 @@ public class SchoolEventController : Controller
     [Route("events/{calendarEventId}/school/question", Name = RouteNames.UpdateEvent.UpdateIsAtSchool)]
     public IActionResult PostIsAtSchool(IsAtSchoolViewModel submitModel)
     {
+        var sessionModel = _sessionService.Get<EventSessionModel>();
         var result = _eventAtSchoolValidator.Validate(submitModel);
 
         if (!result.IsValid)
         {
             ModelState.AddValidationErrors(result.Errors);
-            return View(EventAtSchoolViewPath, submitModel);
+            var model = GetViewModelEventIsAtSchool(sessionModel);
+            model.IsAtSchool = submitModel.IsAtSchool;
+            return View(EventAtSchoolViewPath, model);
         }
-
-        var sessionModel = _sessionService.Get<EventSessionModel>();
 
         sessionModel.IsAtSchool = submitModel.IsAtSchool;
         sessionModel.IsDirectCallFromCheckYourAnswers = false;
@@ -60,6 +61,7 @@ public class SchoolEventController : Controller
         }
 
         _sessionService.Set(sessionModel);
+
 
         if (sessionModel.IsAtSchool == true)
         {
@@ -99,15 +101,18 @@ public class SchoolEventController : Controller
     [Route("events/{calendarEventId}/school/name", Name = RouteNames.UpdateEvent.UpdateSchoolName)]
     public IActionResult PostSchoolName(SchoolNameViewModel submitModel)
     {
+        var sessionModel = _sessionService.Get<EventSessionModel>();
+
         var result = _eventSchoolNameValidator.Validate(submitModel);
 
         if (!result.IsValid)
         {
             ModelState.AddValidationErrors(result.Errors);
-            return View(EventSchoolNameViewPath, submitModel);
+            var model = GetViewModelEventSchoolName(sessionModel);
+            model.Name = submitModel.Name;
+            model.Urn = submitModel.Urn;
+            return View(EventSchoolNameViewPath, model);
         }
-
-        var sessionModel = _sessionService.Get<EventSessionModel>();
 
         sessionModel.SchoolName = submitModel.Name;
         sessionModel.Urn = submitModel.Urn;

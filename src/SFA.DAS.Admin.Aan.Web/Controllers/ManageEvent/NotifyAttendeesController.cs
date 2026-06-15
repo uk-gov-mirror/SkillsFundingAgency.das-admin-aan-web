@@ -30,12 +30,7 @@ public class NotifyAttendeesController : Controller
     [Route("events/{calendarEventId}/notify-attendees", Name = RouteNames.UpdateEvent.NotifyAttendees)]
     public IActionResult Get(Guid calendarEventId)
     {
-        var model = new NotifyAttendeesViewModel
-        {
-            CancelLink = Url.RouteUrl(RouteNames.NetworkEvents)!,
-            PostLink = Url.RouteUrl(RouteNames.UpdateEvent.NotifyAttendees, new { calendarEventId })!
-        };
-
+        var model = GetViewModel(calendarEventId);
         return View(ViewPath, model);
     }
 
@@ -43,21 +38,34 @@ public class NotifyAttendeesController : Controller
     [Route("events/{calendarEventId}/notify-attendees", Name = RouteNames.UpdateEvent.NotifyAttendees)]
     public async Task<IActionResult> Post(NotifyAttendeesViewModel submitModel, Guid calendarEventId, CancellationToken cancellationToken)
     {
+        var sessionModel = _sessionService.Get<EventSessionModel>();
+
         var result = await _validator.ValidateAsync(submitModel, cancellationToken);
 
         if (!result.IsValid)
         {
             ModelState.AddValidationErrors(result.Errors);
-            return View(ViewPath, submitModel);
+            var model = GetViewModel(calendarEventId);
+            model.IsNotifyAttendees = submitModel.IsNotifyAttendees;
+            return View(ViewPath, model);
         }
 
-        var sessionModel = _sessionService.Get<EventSessionModel>();
-
         var request = (UpdateCalendarEventRequest)sessionModel;
+
         request.SendUpdateEventNotification = submitModel.IsNotifyAttendees ?? false;
 
         await _outerApiClient.UpdateCalendarEvent(_sessionService.GetMemberId(), calendarEventId, request, cancellationToken);
 
         return RedirectToRoute(RouteNames.UpdateEventConfirmation, new { calendarEventId = sessionModel.CalendarEventId });
+    }
+
+    private NotifyAttendeesViewModel GetViewModel(Guid calendarEventId)
+    {
+        var model = new NotifyAttendeesViewModel
+        {
+            CancelLink = Url.RouteUrl(RouteNames.NetworkEvents)!,
+            PostLink = Url.RouteUrl(RouteNames.UpdateEvent.NotifyAttendees, new { calendarEventId })!
+        };
+        return model;
     }
 }
