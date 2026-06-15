@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Admin.Aan.Application.OuterApi.NotificationSettings;
 using SFA.DAS.Admin.Aan.Application.Services;
@@ -12,12 +11,14 @@ namespace SFA.DAS.Admin.Aan.Web.Controllers
     [Authorize]
     [Route("notification-settings", Name = RouteNames.NotificationSettings)]
 
-    public class NotificationSettingsController(IOuterApiClient outerApiClient, ISessionService sessionService, IValidator<NotificationSettingsPostRequest> validator) : Controller
+    public class NotificationSettingsController(IOuterApiClient outerApiClient, ISessionService sessionService) : Controller
     {
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var viewModel = await GetViewModel();
+            var adminMemberId = sessionService.GetMemberId();
+            var response = await outerApiClient.GetNotificationSettings(adminMemberId, default);
+            var viewModel = (NotificationSettingsViewModel)response;
             return View(viewModel);
         }
 
@@ -25,15 +26,6 @@ namespace SFA.DAS.Admin.Aan.Web.Controllers
         public async Task<IActionResult> Index(NotificationSettingsPostRequest request)
         {
             var adminMemberId = sessionService.GetMemberId();
-            var result = validator.Validate(request);
-
-            if (!result.IsValid)
-            {
-                ModelState.AddValidationErrors(result.Errors);
-                var model = await GetViewModel();
-                model.ReceiveNotifications = request.ReceiveNotifications;
-                return View(model);
-            }
             var postRequest = new PostNotificationSettings
             {
                 ReceiveNotifications = request.ReceiveNotifications!.Value
@@ -44,14 +36,6 @@ namespace SFA.DAS.Admin.Aan.Web.Controllers
             TempData.AddFlashMessage("Notification settings saved", TempDataDictionaryExtensions.FlashMessageLevel.Success);
 
             return RedirectToRoute(RouteNames.AdministratorHub);
-        }
-
-        private async Task<NotificationSettingsViewModel> GetViewModel()
-        {
-            var adminMemberId = sessionService.GetMemberId();
-            var response = await outerApiClient.GetNotificationSettings(adminMemberId, default);
-            var viewModel = (NotificationSettingsViewModel)response;
-            return viewModel;
         }
     }
 }

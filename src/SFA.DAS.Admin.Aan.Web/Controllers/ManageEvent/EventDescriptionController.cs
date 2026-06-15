@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
-using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.ManageEvent;
 
@@ -37,17 +37,17 @@ public class EventDescriptionController : Controller
     [Route("events/{calendarEventId}/description", Name = RouteNames.UpdateEvent.UpdateDescription)]
     public IActionResult Post(EventDescriptionViewModel submitModel)
     {
-        var sessionModel = _sessionService.Get<EventSessionModel>();
+
         var result = _validator.Validate(submitModel);
 
         if (!result.IsValid)
         {
-            ModelState.AddValidationErrors(result.Errors);
-            var model = GetViewModel(sessionModel);
-            model.EventOutline = submitModel.EventOutline;
-            model.EventSummary = submitModel.EventSummary;
-            return View(ViewPath, model);
+
+            result.AddToModelState(ModelState);
+            return View(ViewPath, submitModel);
         }
+
+        var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.EventOutline = submitModel.EventOutline?.Trim();
         sessionModel.EventSummary = submitModel.EventSummary?.Trim();
 
@@ -57,7 +57,6 @@ public class EventDescriptionController : Controller
         }
 
         _sessionService.Set(sessionModel);
-
 
         if (sessionModel.IsAlreadyPublished)
         {

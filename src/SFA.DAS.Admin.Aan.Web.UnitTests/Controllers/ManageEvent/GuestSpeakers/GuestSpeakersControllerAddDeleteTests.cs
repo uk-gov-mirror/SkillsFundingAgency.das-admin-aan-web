@@ -242,9 +242,6 @@ public class GuestSpeakersControllerAddDeleteTests
         [Greedy] GuestSpeakersController sut)
     {
         sut.ModelState.AddModelError("key", "message");
-        var urlHelper = sut.AddUrlHelperMock();
-        urlHelper.AddUrlForRoute(RouteNames.UpdateEvent.UpdateGuestSpeakerAdd, GuestSpeakerAddUrl);
-        urlHelper.AddUrlForRoute(RouteNames.CreateEvent.GuestSpeakerList, GuestSpeakerListUrl);
 
         var submitModel = new GuestSpeakerAddViewModel { CancelLink = GuestSpeakerListUrl };
         var actualResult = sut.PostAddGuestSpeaker(submitModel);

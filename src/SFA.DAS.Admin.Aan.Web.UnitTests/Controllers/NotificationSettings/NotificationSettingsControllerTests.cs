@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -19,7 +18,6 @@ namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.NotificationSettings
         private Fixture _fixture;
         private Mock<IOuterApiClient> _mockOuterApiClient;
         private Mock<ISessionService> _mockSessionService;
-        private Mock<IValidator<NotificationSettingsPostRequest>> _mockValidator;
         NotificationSettingsController _controller;
 
         [SetUp]
@@ -28,9 +26,8 @@ namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.NotificationSettings
             _fixture = new Fixture();
             _mockOuterApiClient = new Mock<IOuterApiClient>();
             _mockSessionService = new Mock<ISessionService>();
-            _mockValidator = new Mock<IValidator<NotificationSettingsPostRequest>>();
 
-            _controller = new NotificationSettingsController(_mockOuterApiClient.Object, _mockSessionService.Object, _mockValidator.Object);
+            _controller = new NotificationSettingsController(_mockOuterApiClient.Object, _mockSessionService.Object);
         }
 
         [TearDown]
@@ -66,7 +63,6 @@ namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.NotificationSettings
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), new Mock<ITempDataProvider>().Object);
 
             _mockSessionService.Setup(s => s.GetMemberId()).Returns(memberId);
-            _mockValidator.Setup(v => v.Validate(It.IsAny<NotificationSettingsPostRequest>())).Returns(new FluentValidation.Results.ValidationResult());
 
             // Act
             var result = await _controller.Index(postModel);

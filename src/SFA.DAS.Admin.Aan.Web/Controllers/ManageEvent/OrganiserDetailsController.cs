@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
-using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.ManageEvent;
 
@@ -41,19 +41,15 @@ public class OrganiserDetailsController : Controller
     [Route("events/{calendarEventId}/organiser", Name = RouteNames.UpdateEvent.UpdateOrganiserDetails)]
     public IActionResult Post(OrganiserDetailsViewModel submitModel)
     {
-        var sessionModel = _sessionService.Get<EventSessionModel>();
-
         var result = _organiserNameValidator.Validate(submitModel);
 
         if (!result.IsValid)
         {
-            ModelState.AddValidationErrors(result.Errors);
-            var model = GetViewModel(sessionModel);
-            model.OrganiserName = submitModel.OrganiserName;
-            model.OrganiserEmail = submitModel.OrganiserEmail;
-            return View(OrganiserDetailsViewPath, model);
+            result.AddToModelState(ModelState);
+            return View(OrganiserDetailsViewPath, submitModel);
         }
 
+        var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.ContactName = submitModel.OrganiserName;
         sessionModel.ContactEmail = submitModel.OrganiserEmail;
 
@@ -63,7 +59,6 @@ public class OrganiserDetailsController : Controller
         }
 
         _sessionService.Set(sessionModel);
-
 
         if (sessionModel.IsAlreadyPublished)
         {

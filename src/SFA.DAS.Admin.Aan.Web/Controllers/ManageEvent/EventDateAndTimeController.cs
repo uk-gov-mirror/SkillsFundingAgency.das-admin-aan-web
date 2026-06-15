@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Admin.Aan.Application.Services;
@@ -39,21 +40,15 @@ public class EventDateAndTimeController : Controller
     [Route("events/{calendarEventId}/dateandtime", Name = RouteNames.UpdateEvent.UpdateDateAndTime)]
     public IActionResult Post(EventDateAndTimeViewModel submitModel)
     {
-        var sessionModel = _sessionService.Get<EventSessionModel>();
-
         var result = _validator.Validate(submitModel);
 
         if (!result.IsValid)
         {
-            ModelState.AddValidationErrors(result.Errors);
-            var model = GetViewModel(sessionModel);
-            model.DateOfEvent = submitModel.DateOfEvent;
-            model.StartHour = submitModel.StartHour;
-            model.StartMinutes = submitModel.StartMinutes;
-            model.EndHour = submitModel.EndHour;
-            model.EndMinutes = submitModel.EndMinutes;
-            return View(ViewPath, model);
+            result.AddToModelState(ModelState);
+            return View(ViewPath, submitModel);
         }
+
+        var sessionModel = _sessionService.Get<EventSessionModel>();
 
         sessionModel.Start = DateTimeExtensions.LocalToUtcTime(submitModel.DateOfEvent!.Value.Year, submitModel.DateOfEvent!.Value.Month, submitModel.DateOfEvent!.Value.Day, submitModel.StartHour!.Value, submitModel.StartMinutes!.Value);
         sessionModel.End = DateTimeExtensions.LocalToUtcTime(submitModel.DateOfEvent!.Value.Year, submitModel.DateOfEvent!.Value.Month, submitModel.DateOfEvent!.Value.Day, submitModel.EndHour!.Value, submitModel.EndMinutes!.Value);
@@ -64,7 +59,6 @@ public class EventDateAndTimeController : Controller
         }
 
         _sessionService.Set(sessionModel);
-
 
         if (sessionModel.IsAlreadyPublished)
         {

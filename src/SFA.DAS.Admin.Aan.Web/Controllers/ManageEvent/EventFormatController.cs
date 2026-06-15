@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
-using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.ManageEvent;
 
@@ -37,16 +37,15 @@ public class EventFormatController : Controller
     [Route("events/{calendarEventId}/format", Name = RouteNames.UpdateEvent.UpdateEventFormat)]
     public IActionResult Post(EventFormatViewModel submitModel)
     {
-        var sessionModel = _sessionService.Get<EventSessionModel>();
         var result = _validator.Validate(submitModel);
 
         if (!result.IsValid)
         {
-            ModelState.AddValidationErrors(result.Errors);
-            var model = GetViewModel(sessionModel);
-            model.EventFormat = submitModel.EventFormat;
-            return View(ViewPath, model);
+            result.AddToModelState(ModelState);
+            return View(ViewPath, submitModel);
         }
+
+        var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.EventFormat = submitModel.EventFormat;
 
         if (sessionModel.IsAlreadyPublished)
@@ -55,7 +54,6 @@ public class EventFormatController : Controller
         }
 
         _sessionService.Set(sessionModel);
-
 
         if (sessionModel.IsAlreadyPublished)
         {

@@ -270,10 +270,6 @@ public class SchoolEventControllerSchoolNameTests
 
         var submitModel = new SchoolNameViewModel { CancelLink = NetworkEventsUrl };
 
-        var urlHelper = sut.AddUrlHelperMock();
-        urlHelper.AddUrlForRoute(RouteNames.NetworkEvents, NetworkEventsUrl);
-        urlHelper.AddUrlForRoute(RouteNames.CreateEvent.SchoolName, PostUrl);
-
         var result = (ViewResult)sut.PostSchoolName(submitModel);
 
         sut.ModelState.IsValid.Should().BeFalse();

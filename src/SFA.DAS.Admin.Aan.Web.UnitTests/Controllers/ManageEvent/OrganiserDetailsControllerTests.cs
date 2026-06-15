@@ -242,10 +242,6 @@ public class OrganiserDetailsControllerTests
 
         var submitModel = new OrganiserDetailsViewModel { CancelLink = AllNetworksUrl };
 
-        var urlHelper = sut.AddUrlHelperMock();
-        urlHelper.AddUrlForRoute(RouteNames.NetworkEvents, AllNetworksUrl);
-        urlHelper.AddUrlForRoute(RouteNames.CreateEvent.SchoolName, PostUrl);
-
         var result = (ViewResult)sut.Post(submitModel);
 
         sut.ModelState.IsValid.Should().BeFalse();

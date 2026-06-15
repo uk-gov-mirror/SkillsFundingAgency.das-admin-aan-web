@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
-using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.ManageEvent;
 
@@ -38,18 +38,16 @@ public class NumberOfAttendeesController : Controller
     [Route("events/{calendarEventId}/attendees", Name = RouteNames.UpdateEvent.UpdateNumberOfAttendees)]
     public IActionResult Post(NumberOfAttendeesViewModel submitModel)
     {
-        var sessionModel = _sessionService.Get<EventSessionModel>();
-
         var result = _validator.Validate(submitModel);
+
 
         if (!result.IsValid)
         {
-            ModelState.AddValidationErrors(result.Errors);
-            var model = GetViewModel(sessionModel);
-            model.NumberOfAttendees = submitModel.NumberOfAttendees;
-            return View(ViewPath, model);
+            result.AddToModelState(ModelState);
+            return View(ViewPath, submitModel);
         }
 
+        var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.PlannedAttendees = submitModel.NumberOfAttendees;
 
         if (sessionModel.IsAlreadyPublished)

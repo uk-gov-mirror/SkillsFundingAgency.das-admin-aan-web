@@ -5,7 +5,6 @@ using SFA.DAS.Aan.SharedUi.Infrastructure;
 using SFA.DAS.Admin.Aan.Application.OuterApi.Members;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
-using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.RemoveMember;
 
@@ -28,7 +27,12 @@ public class RemoveMemberController : Controller
     [Route("remove-member/{id}", Name = RouteNames.RemoveMember)]
     public async Task<IActionResult> Index([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var removeMemberViewModel = await GetViewModel(id, cancellationToken);
+        RemoveMemberViewModel removeMemberViewModel = new RemoveMemberViewModel();
+        var adminMemberId = _sessionService.GetMemberId();
+        var memberProfiles = await _outerApiClient.GetMemberProfile(id, adminMemberId, cancellationToken);
+        removeMemberViewModel.FullName = memberProfiles.FullName;
+        removeMemberViewModel.CancelLink = Url.RouteUrl(SharedRouteNames.MemberProfile, new { id = id })!;
+        removeMemberViewModel.MemberId = id;
         return View(removeMemberViewModel);
     }
 
@@ -37,16 +41,6 @@ public class RemoveMemberController : Controller
     public async Task<IActionResult> Index([FromRoute] Guid id, SubmitRemoveMemberModel submitRemoveMemberModel, CancellationToken cancellationToken)
     {
         var adminMemberId = _sessionService.GetMemberId();
-
-        var result = _validator.Validate(submitRemoveMemberModel);
-
-        if (!result.IsValid)
-        {
-            ModelState.AddValidationErrors(result.Errors);
-            var model = await GetViewModel(id, cancellationToken);
-            model.Status = submitRemoveMemberModel.Status;
-            return View(model);
-        }
         var postMemberStatusModel = new PostMemberStatusModel
         {
             Status = submitRemoveMemberModel.Status
@@ -63,16 +57,4 @@ public class RemoveMemberController : Controller
         removeMemberConfirmationModel.NetworkDirectoryLink = Url.RouteUrl(SharedRouteNames.NetworkDirectory)!;
         return View(removeMemberConfirmationModel);
     }
-
-    private async Task<RemoveMemberViewModel> GetViewModel(Guid id, CancellationToken cancellationToken)
-    {
-        RemoveMemberViewModel removeMemberViewModel = new RemoveMemberViewModel();
-        var adminMemberId = _sessionService.GetMemberId();
-        var memberProfiles = await _outerApiClient.GetMemberProfile(id, adminMemberId, cancellationToken);
-        removeMemberViewModel.FullName = memberProfiles.FullName;
-        removeMemberViewModel.CancelLink = Url.RouteUrl(SharedRouteNames.MemberProfile, new { id = id })!;
-        removeMemberViewModel.MemberId = id;
-        return removeMemberViewModel;
-    }
-
 }

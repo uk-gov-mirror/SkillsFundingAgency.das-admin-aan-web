@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
-using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.ManageEvent;
 
@@ -39,20 +38,10 @@ public class EventTypeController : Controller
     public async Task<IActionResult> Post(EventTypeViewModel submitModel, CancellationToken cancellationToken)
     {
         var sessionModel = _sessionService.Get<EventSessionModel>();
-        var result = _validator.Validate(submitModel);
-
-        if (!result.IsValid)
-        {
-            ModelState.AddValidationErrors(result.Errors);
-            var model = await GetViewModel(sessionModel, cancellationToken);
-            model.EventTitle = submitModel.EventTitle;
-            model.EventTypeId = submitModel.EventTypeId;
-            model.EventRegionId = submitModel.EventRegionId;
-            return View(ViewPath, model);
-        }
         sessionModel.EventTitle = submitModel.EventTitle;
         sessionModel.CalendarId = submitModel.EventTypeId;
         sessionModel.RegionId = submitModel.EventRegionId;
+        sessionModel.EventTitle = submitModel.EventTitle;
 
         if (sessionModel.IsAlreadyPublished)
         {
