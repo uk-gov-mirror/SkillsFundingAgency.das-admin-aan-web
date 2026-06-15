@@ -42,7 +42,6 @@ public class EventDescriptionController : Controller
 
         if (!result.IsValid)
         {
-
             ModelState.AddValidationErrors(result.Errors);
             return View(ViewPath, submitModel);
         }

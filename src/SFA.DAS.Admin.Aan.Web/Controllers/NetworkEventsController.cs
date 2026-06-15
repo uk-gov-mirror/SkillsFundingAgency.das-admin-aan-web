@@ -87,7 +87,6 @@ public class NetworkEventsController(
 
         if (!result.IsValid)
         {
-
             ModelState.AddValidationErrors(result.Errors);
             return View(viewPath, submitModel);
         }
