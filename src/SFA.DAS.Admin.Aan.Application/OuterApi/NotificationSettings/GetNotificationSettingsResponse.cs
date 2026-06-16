@@ -2,6 +2,6 @@
 {
     public class GetNotificationSettingsResponse
     {
-        public bool ReceiveNotifications { get; set; }
+        public bool? ReceiveNotifications { get; set; }
     }
 }
