@@ -4,7 +4,7 @@
     var body = TempData[TempDataDictionaryExtensions.FlashMessageBodyTempDataKey] as string;
     var detail = TempData[TempDataDictionaryExtensions.FlashMessageTempDetailKey] as string;
     var title = TempData[TempDataDictionaryExtensions.FlashMessageTitleTempDataKey];
-    var level = (TempDataDictionaryExtensions.FlashMessageLevel)TempData[TempDataDictionaryExtensions.FlashMessageLevelTempDataKey];
+    var level = TempData[TempDataDictionaryExtensions.FlashMessageLevelTempDataKey] as TempDataDictionaryExtensions.FlashMessageLevel?;
 
     @if (level == TempDataDictionaryExtensions.FlashMessageLevel.Info)
     {
