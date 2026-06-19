@@ -19,14 +19,14 @@
             </p>
             <input type="hidden" asp-for="@Model.CancelLink"/>
             <div esfa-validation-marker-for="@Model.EventTitle" class="govuk-form-group">
-                <span asp-validation-for="EventTitle" class="govuk-error-message"></span>
+                    <span asp-validation-for="@Model.EventTitle" class="govuk-error-message"></span>
                 <div id="EventTitle">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             Event title
                         </legend>
                         <div class="govuk-form-group">
-                            <input class="govuk-input" asp-for="EventTitle" type="text" maxlength="200">
+                            <input class="govuk-input" asp-for="@Model.EventTitle" type="text" maxlength="200">
                         </div>
                     </fieldset>
                 </div>
