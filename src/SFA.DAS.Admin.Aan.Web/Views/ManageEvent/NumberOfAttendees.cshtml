@@ -1,5 +1,4 @@
-﻿@using SFA.DAS.Admin.Aan.Web.Extensions
-@model SFA.DAS.Admin.Aan.Web.Models.ManageEvent.NumberOfAttendeesViewModel
+﻿@model SFA.DAS.Admin.Aan.Web.Models.ManageEvent.NumberOfAttendeesViewModel
 @{
     ViewData["Title"] = "Create Calendar Event";
 }
@@ -15,9 +14,9 @@
             <input type="hidden" asp-for="@Model.PostLink" />
             <input type="hidden" asp-for="@Model.CancelLink" />
             <div esfa-validation-marker-for="@Model.NumberOfAttendees" class="govuk-form-group" id="NumberOfAttendees">
-                <span asp-validation-for="NumberOfAttendees" class="govuk-error-message"></span>
+                <span asp-validation-for="@Model.NumberOfAttendees" class="govuk-error-message"></span>
                 <div class="govuk-form-group">
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="NumberOfAttendees"
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="@Model.NumberOfAttendees"
                            type="number" min="1" max="1000000" maxlength="7">
                 </div>
             </div>

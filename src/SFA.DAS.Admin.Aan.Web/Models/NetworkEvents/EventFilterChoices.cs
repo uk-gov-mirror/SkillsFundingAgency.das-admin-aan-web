@@ -4,7 +4,7 @@ namespace SFA.DAS.Admin.Aan.Web.Models.NetworkEvents;
 
 public class EventFilterChoices
 {
-    public string Location { get; set; }
+    public string Location { get; set; } = null!;
     public int Radius { get; set; }
     public DateTime? FromDate { get; set; }
     public DateTime? ToDate { get; set; }

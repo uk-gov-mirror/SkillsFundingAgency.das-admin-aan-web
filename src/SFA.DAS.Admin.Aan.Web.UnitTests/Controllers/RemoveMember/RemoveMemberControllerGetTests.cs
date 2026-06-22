@@ -45,11 +45,11 @@ public class RemoveMemberControllerGetTests
         var viewResult = result as ViewResult;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.InstanceOf<ViewResult>());
             Assert.That(viewResult, Is.Not.Null);
-        });
+        }
     }
 
     [Test]
@@ -83,16 +83,16 @@ public class RemoveMemberControllerGetTests
         var viewModel = viewResult!.Model as RemoveMemberViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.FullName, Is.EqualTo(memberProfileResponse.FullName));
             Assert.That(viewModel!.CancelLink, Is.EqualTo(MemberProfileUrl));
             Assert.That(viewModel!.MemberId, Is.EqualTo(memberId));
-            Assert.That(viewModel!.HasRemoveConfirmed, Is.EqualTo(false));
+            Assert.That(viewModel!.HasRemoveConfirmed, Is.False);
             Assert.That(viewModel!.Status, Is.EqualTo(MembershipStatusType.Live));
             Assert.That(viewModel!.FirstName, Is.Null);
             Assert.That(viewModel!.RouteLink, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -103,11 +103,11 @@ public class RemoveMemberControllerGetTests
         var viewResult = result as ViewResult;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.InstanceOf<ViewResult>());
             Assert.That(viewResult, Is.Not.Null);
-        });
+        }
     }
 
     [Test]

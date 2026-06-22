@@ -13,6 +13,7 @@ using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.UnitTests.TestHelpers;
 
 namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.ErrorControllerTests;
+
 [TestFixture]
 public class ErrorControllerTests
 {
@@ -117,9 +118,6 @@ public class ErrorControllerTests
         var viewModel = result!.Model as ErrorViewModel;
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(viewModel!.HomePageUrl, Is.EqualTo(AdministratorHubUrl));
-        });
+        Assert.That(viewModel!.HomePageUrl, Is.EqualTo(AdministratorHubUrl));
     }
 }

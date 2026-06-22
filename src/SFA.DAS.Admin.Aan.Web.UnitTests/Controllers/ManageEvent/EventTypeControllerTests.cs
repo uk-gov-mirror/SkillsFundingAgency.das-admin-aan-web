@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -14,6 +14,7 @@ using SFA.DAS.Admin.Aan.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.ManageEvent;
+
 public class EventTypeControllerTests
 {
     private static readonly string NetworkEventsUrl = Guid.NewGuid().ToString();
@@ -162,7 +163,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);
@@ -199,7 +200,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);
@@ -235,7 +236,7 @@ public class EventTypeControllerTests
         var submitModel = new EventTypeViewModel();
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(It.IsAny<EventTypeViewModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(It.IsAny<EventTypeViewModel>())).Returns(validationResult);
 
         var sut = new EventTypeController(outerApiMock.Object, sessionServiceMock.Object, validatorMock.Object);
 
@@ -264,7 +265,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);
@@ -300,7 +301,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);

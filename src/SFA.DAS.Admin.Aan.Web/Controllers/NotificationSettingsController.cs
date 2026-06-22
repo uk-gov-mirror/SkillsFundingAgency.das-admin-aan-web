@@ -5,7 +5,6 @@ using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.NotificationSettings;
-using SFA.DAS.Validation.Mvc.Filters;
 
 namespace SFA.DAS.Admin.Aan.Web.Controllers
 {
@@ -19,7 +18,7 @@ namespace SFA.DAS.Admin.Aan.Web.Controllers
         {
             var adminMemberId = sessionService.GetMemberId();
             var response = await outerApiClient.GetNotificationSettings(adminMemberId, default);
-            var viewModel = (NotificationSettingsViewModel) response;
+            var viewModel = (NotificationSettingsViewModel)response;
             return View(viewModel);
         }
 

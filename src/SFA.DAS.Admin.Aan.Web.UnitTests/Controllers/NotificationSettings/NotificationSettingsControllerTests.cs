@@ -30,12 +30,18 @@ namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.NotificationSettings
             _controller = new NotificationSettingsController(_mockOuterApiClient.Object, _mockSessionService.Object);
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            _controller?.Dispose();
+        }
+
         [Test]
         public async Task Get_Index_ReturnsViewResult_WithNotificationSettingsViewModel()
         {
             var memberId = _fixture.Create<Guid>();
             var apiResponse = _fixture.Create<GetNotificationSettingsResponse>();
-            
+
             _mockSessionService.Setup(s => s.GetMemberId()).Returns(memberId);
             _mockOuterApiClient.Setup(c => c.GetNotificationSettings(memberId, default))
                 .ReturnsAsync(apiResponse);

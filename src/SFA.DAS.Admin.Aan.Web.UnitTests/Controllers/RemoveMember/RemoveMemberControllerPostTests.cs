@@ -12,6 +12,7 @@ using SFA.DAS.Admin.Aan.Web.Models.RemoveMember;
 using SFA.DAS.Admin.Aan.Web.UnitTests.TestHelpers;
 
 namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.RemoveMember;
+
 public class RemoveMemberControllerPostTests
 {
     private RemoveMemberController sut = null!;
@@ -46,12 +47,12 @@ public class RemoveMemberControllerPostTests
         var response = await sut.Index(memberId, submitRemoveMemberModel, CancellationToken.None);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(response, Is.TypeOf<RedirectToActionResult>());
             var redirectToAction = (RedirectToActionResult)response;
             Assert.That(redirectToAction.ActionName, Does.Contain("RemoveMemberConfirmation"));
-        });
+        }
     }
 
     private void SetUpControllerWithContext()
@@ -74,7 +75,7 @@ public class RemoveMemberControllerPostTests
     private void SetUpModelValidateTrue()
     {
         SetUpControllerWithContext();
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<SubmitRemoveMemberModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+        _validatorMock.Setup(v => v.Validate(It.IsAny<SubmitRemoveMemberModel>())).Returns(new ValidationResult());
     }
 
     [TearDown]

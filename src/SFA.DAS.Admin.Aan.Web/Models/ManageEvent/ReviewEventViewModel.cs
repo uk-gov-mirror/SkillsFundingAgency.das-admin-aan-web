@@ -1,7 +1,6 @@
-﻿using SFA.DAS.Aan.SharedUi.Constants;
+﻿using System.ComponentModel.DataAnnotations;
+using SFA.DAS.Aan.SharedUi.Constants;
 using SFA.DAS.Aan.SharedUi.Extensions;
-using System.ComponentModel.DataAnnotations;
-using SFA.DAS.Admin.Aan.Application.OuterApi.Calendar.Responses;
 
 namespace SFA.DAS.Admin.Aan.Web.Models.ManageEvent;
 
@@ -9,13 +8,13 @@ public class ReviewEventViewModel : ManageEventViewModelBase
 {
     public enum AttendeeSortOrderOption : byte
     {
-        [Display(Name="Signed-up date (newest)")]
+        [Display(Name = "Signed-up date (newest)")]
         SignedUpDescending,
-        [Display(Name="Signed-up (oldest)")]
+        [Display(Name = "Signed-up (oldest)")]
         SignedUpAscending,
-        [Display(Name="Surname (A to Z)")]
+        [Display(Name = "Surname (A to Z)")]
         SurnameAsc,
-        [Display(Name="Surname (Z to A)")]
+        [Display(Name = "Surname (Z to A)")]
         SurnameDesc
     }
 
@@ -102,7 +101,7 @@ public class ReviewEventViewModel : ManageEventViewModelBase
             PageTitle = source.PageTitle,
             HasChangedEvent = source.HasChangedEvent
         };
-    
+
     public record Attendee(Guid Id, string Name, string Surname, string Email, DateTime? SignUpDate);
 
     public record CancelledAttendee(Guid Id, string Name, string Email, DateTime? CancellationDate);

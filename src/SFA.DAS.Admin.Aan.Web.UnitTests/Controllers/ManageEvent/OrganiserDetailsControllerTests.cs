@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -241,6 +241,7 @@ public class OrganiserDetailsControllerTests
         sut.ModelState.AddModelError("key", "message");
 
         var submitModel = new OrganiserDetailsViewModel { CancelLink = AllNetworksUrl };
+
         var result = (ViewResult)sut.Post(submitModel);
 
         sut.ModelState.IsValid.Should().BeFalse();
