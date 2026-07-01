@@ -14,6 +14,7 @@ namespace SFA.DAS.Admin.Aan.Web.Controllers.ManageMembers;
 [Authorize(Roles = Roles.ManageMembersRole)]
 public class RemoveMemberController : Controller
 {
+    public const string ViewPath = "~/Views/RemoveMember/Index.cshtml";
     private readonly ISessionService _sessionService;
     private readonly IOuterApiClient _outerApiClient;
     private readonly IValidator<SubmitRemoveMemberModel> _validator;
@@ -41,6 +42,15 @@ public class RemoveMemberController : Controller
     [Route("remove-member/{id}", Name = RouteNames.RemoveMember)]
     public async Task<IActionResult> Index([FromRoute] Guid id, SubmitRemoveMemberModel submitRemoveMemberModel, CancellationToken cancellationToken)
     {
+        var result = _validator.Validate(submitRemoveMemberModel);
+
+        if (!result.IsValid)
+        {
+
+            result.AddToModelState(ModelState);
+            return View(ViewPath, submitRemoveMemberModel);
+        }
+
         var adminMemberId = _sessionService.GetMemberId();
         var postMemberStatusModel = new PostMemberStatusModel
         {

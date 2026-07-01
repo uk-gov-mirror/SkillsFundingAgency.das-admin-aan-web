@@ -39,6 +39,14 @@ public class EventTypeController : Controller
     [Route("events/{calendarEventId}/type", Name = RouteNames.UpdateEvent.UpdateEventType)]
     public async Task<IActionResult> Post(EventTypeViewModel submitModel, CancellationToken cancellationToken)
     {
+        var result = _validator.Validate(submitModel);
+
+        if (!result.IsValid)
+        {
+            result.AddToModelState(ModelState);
+            return View(ViewPath, submitModel);
+        }
+
         var sessionModel = _sessionService.Get<EventSessionModel>();
         sessionModel.EventTitle = submitModel.EventTitle;
         sessionModel.CalendarId = submitModel.EventTypeId;

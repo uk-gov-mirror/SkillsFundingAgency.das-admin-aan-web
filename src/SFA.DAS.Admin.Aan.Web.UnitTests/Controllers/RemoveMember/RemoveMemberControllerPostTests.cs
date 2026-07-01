@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +11,10 @@ using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Controllers.ManageMembers;
 using SFA.DAS.Admin.Aan.Web.Models.RemoveMember;
 using SFA.DAS.Admin.Aan.Web.UnitTests.TestHelpers;
+using SFA.DAS.Admin.Aan.Web.Validators;
 
 namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.RemoveMember;
+
 public class RemoveMemberControllerPostTests
 {
     private RemoveMemberController sut = null!;
@@ -54,6 +57,23 @@ public class RemoveMemberControllerPostTests
         });
     }
 
+    [Test]
+    public async Task Index_PostModelIsInvalid_ReturnsToRemoveMemberPage()
+    {
+        var failedValidationResult = new ValidationResult
+        { Errors = new List<ValidationFailure> { new("testProperty", "testMessage") } };
+
+        var validatorMock = new Mock<IValidator<SubmitRemoveMemberModel>>();
+
+        validatorMock.Setup(x => x.Validate(It.IsAny<SubmitRemoveMemberModel>())).Returns(failedValidationResult);
+
+        var sut = new RemoveMemberController(Mock.Of<ISessionService>(), Mock.Of<IOuterApiClient>(), validatorMock.Object);
+
+        var result = await sut.Index(Guid.NewGuid(), new SubmitRemoveMemberModel(), CancellationToken.None) as ViewResult;
+
+        result!.ViewName.Should().Be(RemoveMemberController.ViewPath);
+    }
+
     private void SetUpControllerWithContext()
     {
         var _fixture = new Fixture();
@@ -74,7 +94,7 @@ public class RemoveMemberControllerPostTests
     private void SetUpModelValidateTrue()
     {
         SetUpControllerWithContext();
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<SubmitRemoveMemberModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+        _validatorMock.Setup(v => v.Validate(It.IsAny<SubmitRemoveMemberModel>())).Returns(new ValidationResult());
     }
 
     [TearDown]

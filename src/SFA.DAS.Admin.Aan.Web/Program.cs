@@ -7,6 +7,7 @@ using SFA.DAS.Admin.Aan.Web.AppStart;
 using SFA.DAS.Admin.Aan.Web.Authentication;
 using SFA.DAS.Admin.Aan.Web.Configuration;
 using SFA.DAS.Admin.Aan.Web.Filters;
+using SFA.DAS.Admin.Aan.Web.Validators.ManageEvent;
 using SFA.DAS.Validation.Mvc.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +44,7 @@ builder.Services
     .AddSessionStateTempDataProvider();
 builder.Services.AddDasHealthChecks(applicationConfiguration);
 
-builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssembly(typeof(EventDateAndTimeViewModelValidator).Assembly);
 
 #if DEBUG
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

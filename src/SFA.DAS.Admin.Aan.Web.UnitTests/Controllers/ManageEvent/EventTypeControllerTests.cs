@@ -14,6 +14,7 @@ using SFA.DAS.Admin.Aan.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Admin.Aan.Web.UnitTests.Controllers.ManageEvent;
+
 public class EventTypeControllerTests
 {
     private static readonly string NetworkEventsUrl = Guid.NewGuid().ToString();
@@ -162,7 +163,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);
@@ -199,7 +200,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);
@@ -235,7 +236,7 @@ public class EventTypeControllerTests
         var submitModel = new EventTypeViewModel();
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(It.IsAny<EventTypeViewModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(It.IsAny<EventTypeViewModel>())).Returns(validationResult);
 
         var sut = new EventTypeController(outerApiMock.Object, sessionServiceMock.Object, validatorMock.Object);
 
@@ -264,7 +265,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);
@@ -300,7 +301,7 @@ public class EventTypeControllerTests
         sessionServiceMock.Setup(s => s.Get<EventSessionModel>()).Returns(sessionModel);
 
         var validationResult = new ValidationResult();
-        validatorMock.Setup(v => v.ValidateAsync(submitModel, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+        validatorMock.Setup(v => v.Validate(submitModel)).Returns(validationResult);
 
         var outerApiMock = new Mock<IOuterApiClient>();
         outerApiMock.Setup(o => o.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync([]);
@@ -312,5 +313,22 @@ public class EventTypeControllerTests
 
         await sut.Post(submitModel, new CancellationToken());
         sessionServiceMock.Verify(s => s.Set(It.Is<EventSessionModel>(m => m.HasChangedEvent == true)), Times.Once);
+    }
+
+    [Test]
+    public async Task Post_ModelIsInvalid_ReturnsToEventTypePage()
+    {
+        var failedValidationResult = new ValidationResult
+        { Errors = new List<ValidationFailure> { new("testProperty", "testMessage") } };
+
+        var validatorMock = new Mock<IValidator<EventTypeViewModel>>();
+
+        validatorMock.Setup(x => x.Validate(It.IsAny<EventTypeViewModel>())).Returns(failedValidationResult);
+
+        var sut = new EventTypeController(Mock.Of<IOuterApiClient>(), Mock.Of<ISessionService>(), validatorMock.Object);
+
+        var result = await sut.Post(new EventTypeViewModel(), CancellationToken.None) as ViewResult;
+
+        result!.ViewName.Should().Be(EventTypeController.ViewPath);
     }
 }
