@@ -37,7 +37,7 @@ public class ErrorController : Controller
                     var userName = HttpContext.User.Identity!.Name ?? HttpContext.User.FindFirstValue(ClaimTypes.Upn);
                     var roles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role || c.Type == Roles.RoleClaimType).Select(c => c.Value);
 
-                    _logger.LogError("AccessDenied - User '{userName}' does not have a valid role. They have the following roles: {roles}", userName, string.Join(",", roles));
+                    _logger.LogError("AccessDenied - User '{UserName}' does not have a valid role. They have the following roles: {Roles}", userName, string.Join(",", roles));
                 }
 
                 return View("~/Views/Account/AccessDenied.cshtml", new Error403ViewModel(_configuration["ResourceEnvironmentName"] ?? string.Empty) { UseDfESignIn = _applicationConfiguration.UseDfESignIn });
@@ -64,11 +64,11 @@ public class ErrorController : Controller
 
         if (User.Identity!.IsAuthenticated)
         {
-            _logger.LogError(feature!.Error, "Unexpected error occured during request to path: {path} by user: {user}", feature.Path, HttpContext.User.FindFirstValue(ClaimTypes.Upn));
+            _logger.LogError(feature!.Error, "Unexpected error occured during request to path: {Path} by user: {User}", feature.Path, HttpContext.User.FindFirstValue(ClaimTypes.Upn));
         }
         else
         {
-            _logger.LogError(feature!.Error, "Unexpected error occured during request to {path}", feature.Path);
+            _logger.LogError(feature!.Error, "Unexpected error occured during request to {Path}", feature.Path);
         }
         return View(errorViewModel);
     }

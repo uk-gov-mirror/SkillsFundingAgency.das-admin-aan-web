@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Admin.Aan.Web.AppStart;
 using SFA.DAS.Admin.Aan.Web.Authentication;
 using SFA.DAS.Admin.Aan.Web.Configuration;
+using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Filters;
 using SFA.DAS.Admin.Aan.Web.Validators.ManageEvent;
 using SFA.DAS.Validation.Mvc.Filters;
@@ -27,6 +28,7 @@ builder.Services
         options.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
     })
     .AddApplicationInsightsTelemetry()
+    .AddTelemetryRegistration((IConfigurationRoot)builder.Configuration)
     .AddAuthenticationServices(rootConfiguration)
     .AddHttpContextAccessor()
     .AddDataProtection(rootConfiguration)

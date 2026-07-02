@@ -23,7 +23,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/3.0.8
+    ref: refs/tags/3.0.10
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -93,6 +93,7 @@ stages:
   variables:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
+  - group: PREPROD das-admin-aan-web
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -120,6 +121,7 @@ stages:
   variables:
   - group: MO Management Resources
   - group: MO Shared Resources
+  - group: MO das-admin-aan-web
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:

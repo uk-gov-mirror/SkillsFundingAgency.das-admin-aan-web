@@ -2,15 +2,12 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RestEase;
 using SFA.DAS.Aan.SharedUi.Models;
-using SFA.DAS.Admin.Aan.Application.OuterApi.Calendar.Responses;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.ManageEvent;
 using SFA.DAS.Admin.Aan.Web.Services;
-using SFA.DAS.AdminService.Common.Extensions.TagHelpers;
 using static SFA.DAS.Admin.Aan.Web.Models.ManageEvent.ReviewEventViewModel;
 
 namespace SFA.DAS.Admin.Aan.Web.Controllers;
@@ -82,7 +79,7 @@ public class CalendarEventController(
         if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
-            return RedirectToRoute(RouteNames.CalendarEvent, new { calendarEventId});
+            return RedirectToRoute(RouteNames.CalendarEvent, new { calendarEventId });
         }
 
         return RedirectToRoute(RouteNames.UpdateEvent.NotifyAttendees, new { calendarEventId });

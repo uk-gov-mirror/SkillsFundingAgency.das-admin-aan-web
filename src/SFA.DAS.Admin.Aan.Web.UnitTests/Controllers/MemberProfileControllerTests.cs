@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using AutoFixture;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -94,7 +94,7 @@ public class MemberProfileControllerTests
         var viewModel = viewResult!.Model as AmbassadorProfileViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.Activities, Is.Not.Null);
             Assert.That(viewModel!.Activities.FutureEvents, Is.Not.Null);
@@ -104,7 +104,7 @@ public class MemberProfileControllerTests
             Assert.That(viewModel!.Activities.EventsAttendedCount, Is.EqualTo(eventsAttendedCount));
             Assert.That(viewModel!.Activities.SchoolEventsAttendedCount, Is.EqualTo(schoolEventsAttendedCount));
             Assert.That(viewModel!.Activities.LastEventSignUpDate, Is.EqualTo(lastSignedUpDate));
-        });
+        }
     }
 
     [Test]
@@ -118,12 +118,12 @@ public class MemberProfileControllerTests
         var viewModel = viewResult!.Model as AmbassadorProfileViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.RemoveMember, Is.Not.Null);
             Assert.That(viewModel!.RemoveMember.FirstName, Is.EqualTo(memberProfileResponse.FirstName));
             Assert.That(viewModel!.RemoveMember.RouteLink, Is.EqualTo(RemoveMemberUrl));
-        });
+        }
     }
 
     [Test]
@@ -200,14 +200,14 @@ public class MemberProfileControllerTests
         var viewModel = viewResult!.Model as AmbassadorProfileViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.Activities.FutureEvents, Has.Count.EqualTo(0));
-            Assert.That(viewModel!.Activities.FutureEventsCount, Is.EqualTo(0));
-            Assert.That(viewModel!.Activities.EventsAttendedCount, Is.EqualTo(0));
-            Assert.That(viewModel!.Activities.SchoolEventsAttendedCount, Is.EqualTo(0));
+            Assert.That(viewModel!.Activities.FutureEventsCount, Is.Zero);
+            Assert.That(viewModel!.Activities.EventsAttendedCount, Is.Zero);
+            Assert.That(viewModel!.Activities.SchoolEventsAttendedCount, Is.Zero);
             Assert.That(viewModel!.Activities.LastEventSignUpDate, Is.EqualTo("no events attended"));
-        });
+        }
     }
 
     [Test, AutoData]
@@ -233,11 +233,11 @@ public class MemberProfileControllerTests
         var viewModel = viewResult!.Model as AmbassadorProfileViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.ReasonForJoining.ShowReasonForJoining, Is.True);
             Assert.That(viewModel!.ReasonForJoining.ReasonForJoining, Is.EqualTo(reasonToJoin));
-        });
+        }
     }
 
     [Test, AutoData]
@@ -261,11 +261,11 @@ public class MemberProfileControllerTests
         var viewModel = viewResult!.Model as AmbassadorProfileViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.ReasonForJoining.ShowReasonForJoining, Is.False);
             Assert.That(viewModel!.ReasonForJoining.ReasonForJoining, Is.EqualTo(string.Empty));
-        });
+        }
     }
 
     [Test, AutoData]
@@ -289,11 +289,11 @@ public class MemberProfileControllerTests
         var viewModel = viewResult!.Model as AmbassadorProfileViewModel;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel!.ReasonForJoining.ShowReasonForJoining, Is.False);
             Assert.That(viewModel!.ReasonForJoining.ReasonForJoining, Is.EqualTo(reasonToJoin));
-        });
+        }
     }
 
     [Test, AutoData]
