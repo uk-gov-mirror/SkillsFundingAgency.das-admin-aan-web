@@ -5,6 +5,7 @@ using SFA.DAS.Aan.SharedUi.Infrastructure;
 using SFA.DAS.Admin.Aan.Application.OuterApi.Members;
 using SFA.DAS.Admin.Aan.Application.Services;
 using SFA.DAS.Admin.Aan.Web.Authentication;
+using SFA.DAS.Admin.Aan.Web.Extensions;
 using SFA.DAS.Admin.Aan.Web.Infrastructure;
 using SFA.DAS.Admin.Aan.Web.Models.RemoveMember;
 
@@ -46,7 +47,7 @@ public class RemoveMemberController : Controller
         if (!result.IsValid)
         {
 
-            result.AddToModelState(ModelState);
+            ModelState.AddValidationErrors(result.Errors);
             return View(ViewPath, submitRemoveMemberModel);
         }
 
