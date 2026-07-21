@@ -60,14 +60,20 @@ public class RemoveMemberControllerPostTests
     [Test]
     public async Task Index_PostModelIsInvalid_ReturnsToRemoveMemberPage()
     {
-        var failedValidationResult = new ValidationResult
-        { Errors = new List<ValidationFailure> { new("testProperty", "testMessage") } };
-
         var validatorMock = new Mock<IValidator<SubmitRemoveMemberModel>>();
 
-        validatorMock.Setup(x => x.Validate(It.IsAny<SubmitRemoveMemberModel>())).Returns(failedValidationResult);
+        validatorMock.Setup(x => x.Validate(It.IsAny<SubmitRemoveMemberModel>())).Returns(new ValidationResult
+        { Errors = new List<ValidationFailure> { new("testProperty", "testMessage") } });
 
-        var sut = new RemoveMemberController(Mock.Of<ISessionService>(), Mock.Of<IOuterApiClient>(), validatorMock.Object);
+        var outerApiClientMock = new Mock<IOuterApiClient>();
+
+        outerApiClientMock
+            .Setup(x => x.GetMemberProfile(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new MemberProfileResponse { FullName = "TestName" });
+
+        var sut = new RemoveMemberController(Mock.Of<ISessionService>(), outerApiClientMock.Object, validatorMock.Object);
+
+        sut.AddUrlHelperMock().AddUrlForRoute(SharedRouteNames.MemberProfile, MemberProfileUrl).AddUrlForRoute(SharedRouteNames.NetworkDirectory, Guid.NewGuid().ToString());
 
         var result = await sut.Index(Guid.NewGuid(), new SubmitRemoveMemberModel(), CancellationToken.None) as ViewResult;
 

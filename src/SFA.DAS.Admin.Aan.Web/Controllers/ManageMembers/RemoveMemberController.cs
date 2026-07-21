@@ -29,12 +29,8 @@ public class RemoveMemberController : Controller
     [Route("remove-member/{id}", Name = RouteNames.RemoveMember)]
     public async Task<IActionResult> Index([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        RemoveMemberViewModel removeMemberViewModel = new RemoveMemberViewModel();
-        var adminMemberId = _sessionService.GetMemberId();
-        var memberProfiles = await _outerApiClient.GetMemberProfile(id, adminMemberId, cancellationToken);
-        removeMemberViewModel.FullName = memberProfiles.FullName;
-        removeMemberViewModel.CancelLink = Url.RouteUrl(SharedRouteNames.MemberProfile, new { id = id })!;
-        removeMemberViewModel.MemberId = id;
+        RemoveMemberViewModel removeMemberViewModel = await BuildModel(id, cancellationToken);
+
         return View(removeMemberViewModel);
     }
 
@@ -46,9 +42,13 @@ public class RemoveMemberController : Controller
 
         if (!result.IsValid)
         {
-
             ModelState.AddValidationErrors(result.Errors);
-            return View(ViewPath, submitRemoveMemberModel);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var model = await BuildModel(id, cancellationToken);
+            return View(ViewPath, model);
         }
 
         var adminMemberId = _sessionService.GetMemberId();
@@ -67,5 +67,17 @@ public class RemoveMemberController : Controller
         RemoveMemberConfirmationModel removeMemberConfirmationModel = new RemoveMemberConfirmationModel();
         removeMemberConfirmationModel.NetworkDirectoryLink = Url.RouteUrl(SharedRouteNames.NetworkDirectory)!;
         return View(removeMemberConfirmationModel);
+    }
+
+    private async Task<RemoveMemberViewModel> BuildModel(Guid id, CancellationToken cancellationToken)
+    {
+        var viewModel = new RemoveMemberViewModel();
+        var adminMemberId = _sessionService.GetMemberId();
+        var memberProfiles = await _outerApiClient.GetMemberProfile(id, adminMemberId, cancellationToken);
+        viewModel.FullName = memberProfiles.FullName;
+        viewModel.CancelLink = Url.RouteUrl(SharedRouteNames.MemberProfile, new { id = id })!;
+        viewModel.MemberId = id;
+
+        return viewModel;
     }
 }
